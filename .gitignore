@@ -4,3 +4,4 @@
 #ignore pycache
 /TGGS/__pycache__/
 /AGL_TGGS/__pycache__/
+/AGL_TGGS/migrations/__pycache__/
