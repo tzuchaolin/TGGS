@@ -9,8 +9,10 @@ class Project(models.Model):
     end_date = models.DateField(null=True, blank=True)
     member = models.ManyToManyField(User)
 
-    def __str__(self):
-        return self.title
+    def display_member(self):
+        return ", ".join(member.username for member in self.member.all())
+
+    display_member.short_description = 'Member'
 
 
 class Subject(models.Model):

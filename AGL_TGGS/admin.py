@@ -5,7 +5,7 @@ from .models import Project, Subject, Work
 
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ('title', 'start_date', 'end_date')
+    list_display = ('title', 'start_date', 'end_date', 'display_member')
     
 
 @admin.register(Subject)
