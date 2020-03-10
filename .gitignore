@@ -1,1 +1,6 @@
+#ignore database
 *.sqlite3
+
+#ignore pycache
+/TGGS/__pycache__/
+/AGL_TGGS/__pycache__/
