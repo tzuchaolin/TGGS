@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.validators import MaxValueValidator, MinValueValidator
 import datetime
 
 
@@ -16,13 +17,16 @@ class Project(models.Model):
 
 
 class Subject(models.Model):
-    ratio = models.FloatField(null=True, blank=True, default='')
+    ratio = models.PositiveIntegerField(null=True, blank=True, default='', 
+                                        validators=[MaxValueValidator(100)])
     executor = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
-        return self.executor
+        worker = str(self.executor)
+        return worker
 
 
 class Work(models.Model):
     content = models.CharField(max_length=200, default='')
-    progress = models.FloatField(null=True, blank=True, default='')
+    progress = models.FloatField(null=True, blank=True, default='', 
+                                 validators=[MinValueValidator(0), MaxValueValidator(100)])
