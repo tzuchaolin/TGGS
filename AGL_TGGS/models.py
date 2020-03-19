@@ -15,10 +15,10 @@ class Project(models.Model):
     # details
     title = models.CharField(max_length=50)
     code = models.CharField(max_length=50)
-    start_date = models.DateField(blank=True)
-    deadline = models.DateField(blank=True)
-    end_date = models.DateField(blank=True)
-    budget = models.IntegerField(blank=True)
+    start_date = models.DateField(null=True)
+    deadline = models.DateField(null=True)
+    end_date = models.DateField(null=True)
+    budget = models.IntegerField(null=True)
     
     # modified datetime
     created_at = models.DateTimeField('created at', auto_now=False, auto_now_add=True)
@@ -34,26 +34,26 @@ class Project(models.Model):
 
     display_member.short_description = 'Member'
 
-    def grade(self):
-        Psalary = 0
-        #if len(self.jobdivision_set.all()) > 1:
+    # def grade(self):
+    #     Psalary = 0
+    #     #if len(self.jobdivision_set.all()) > 1:
 
-        if len(self.jobdivision_set.all()) > 1:
-            Psalary = reduce(lambda x, y: x.salary + y.salary, self.jobdivision_set.all())
-        Sdays = self.end_date - self.deadline
-        if Sdays.days > 0:
-            cost_of_salary = Sdays.days * Psalary / 30
-        else:
-            cost_of_salary = 0
+    #     if len(self.jobdivision_set.all()) > 1:
+    #         Psalary = reduce(lambda x, y: x.salary + y.salary, self.jobdivision_set.all())
+    #     Sdays = self.end_date - self.deadline
+    #     if Sdays.days > 0:
+    #         cost_of_salary = Sdays.days * Psalary / 30
+    #     else:
+    #         cost_of_salary = 0
         
-        cost_of_project = 0
-        if len(self.cost_set.all()) > 1:
-            cost_of_project = reduce(lambda x, y: x.amount + y.amount, self.cost_set.all())
-        return (self.budget - cost_of_project - cost_of_salary) / 1000
+    #     cost_of_project = 0
+    #     if len(self.cost_set.all()) > 1:
+    #         cost_of_project = reduce(lambda x, y: x.amount + y.amount, self.cost_set.all())
+    #     return (self.budget - cost_of_project - cost_of_salary) / 1000
     
-    '''def grade(self):
-        total_cost = reduce(lambda x, y: x.amount + y.amount, self.cost_set) 
-        return (self.budget -total_cost) / 1000'''
+    # def grade(self):
+    #     total_cost = reduce(lambda x, y: x.amount + y.amount, self.cost_set) 
+    #     return (self.budget -total_cost) / 1000
 
 
 class Cost(models.Model):
@@ -70,7 +70,7 @@ class Cost(models.Model):
 
 class JobDivision(models.Model):
     # relations
-    executor = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    assignee = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     project = models.ForeignKey('Project', on_delete=models.CASCADE, null=True)
 
     # details
@@ -79,19 +79,18 @@ class JobDivision(models.Model):
     salary = models.PositiveIntegerField(null=True)
 
     def __str__(self):
-        worker = str(self.executor)
+        worker = str(self.assignee)
         return worker
 
 
 class Job(models.Model):
     # relations
-    executor = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    assignee = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
 
     # details
-    content = models.CharField(max_length=200, default='')
-    progress = models.BooleanField(default=False)
+    content = models.CharField(max_length=50, default='')
+    completed = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.content
-    
+        return self.content 
     
