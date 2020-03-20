@@ -1,35 +1,50 @@
 #!python
+import re
 import requests
 import json
 
-from AGL_TGGS.models import Project, Job
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
+from AGL_TGGS.models import Project, Job, Assignee
 
 
 # PAT
 headers = {'Authorization': 'Bearer 0/ea4e1acbc8e9d9ef9cc2e2cd625f2db8'}
+asana_url = 'https://app.asana.com/api/1.0'
+workspace_gid = '510975529506053'
 
-# Get projects
-p_url = "https://app.asana.com/api/1.0/projects?opt_fields=id,created_at,due_date,current_status,members.id,members.name,name&workspace=510975529506053"
-p = requests.request("GET", p_url, headers=headers)
-projects = p.json()
-for project in projects['data']:
-    case = Project(
-         title=project['name'], 
-         start_date=project['created_at'][0:10])
-    case.save()
 
-# Get tasks
-for i in projects['data']:
-    t_url = "https://app.asana.com/api/1.0/tasks?opt_fields=created_at,name,completed,completed_at,due_on,projects.name,tags.name,assignee.name&project=%s"%(i['gid'])
-    t = requests.request("GET", t_url, headers=headers)
-    tasks = t.json()
-    for task in tasks['data']:
-        if task['assignee'] is not None:
-            job = Job(
-                content=task['name'], 
-                completed=task['completed'], 
-                assignee=task['assignee']['name'])
-            job.save()
-        else:
-            pass
+# Get Users
+users_url = f'{ asana_url }/users?opt_fields=email'
+resp = requests.request("GET", users_url, headers=headers).json()['data']
+
+for asana_user in resp:
+    assignee = Assignee.objects.filter(gid=asana_user['gid']).first()
+    if not assignee:
+        asana_email = asana_user['email']
+        user = get_user_model().objects.filter(email=asana_email).first()
+        if user:
+            Assignee.objects.create(user=user, gid=asana_user['gid'])
+   
+
+# Get tasks 
+for assignee in Assignee.objects.all():
+    assignee_tasks_url = f'{ asana_url }/tasks?workspace={ workspace_gid }&assignee={ assignee.gid }&opt_fields=assignee,completed,tags.name,name'
+    resp = requests.request("GET", assignee_tasks_url, headers=headers).json()['data']
+
+    for task in resp:
+        job = Job.objects.filter(gid=task['gid']).first()
+        if not job:
+            Job.objects.create(gid=task['gid'],
+                               completed=task['completed'],
+                               content=task['name'],
+                               assignee=assignee)
+        # Create projects
+        tags = task['tags']
+        for tag in tags:
+            name = tag['name']
+            pattern = re.compile(r'^g(\d)+_(\d)+_(\d)-')
+            match = pattern.match(name)
+            if match:
+                project = Project.objects.filter(title=name).first()
+                if not project:
+                    Project.objects.create(gid=tag['gid'], title=tag['name'])

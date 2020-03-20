@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import Cost, Project, JobDivision, Job
+from .models import Cost, Project, Job
+
 
 @admin.register(Cost)
 class CostAdmin(admin.ModelAdmin):
@@ -16,12 +17,6 @@ class ProjectAdmin(admin.ModelAdmin):
     #     return obj.grade()
     
     # grade.short_description = "Grade"
-
-
-@admin.register(JobDivision)
-class DivisionAdmin(admin.ModelAdmin):
-    list_display = ('assignee', 'ratio', 'salary', 'project')
-    list_filter = ('assignee', 'project')
 
 
 @admin.register(Job)

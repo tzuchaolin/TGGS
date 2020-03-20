@@ -4,15 +4,21 @@ from functools import reduce
 from datetime import datetime
 from datetime import timedelta
 from django.utils import timezone
-from django.contrib.auth.models import User
+from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator
 
 
+class Assignee(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    gid = models.CharField(max_length=50)
+    
+
 class Project(models.Model):
     # relations
-    member = models.ManyToManyField(User)
+    member = models.ManyToManyField(Assignee)
 
     # details
+    gid = models.CharField(max_length=50)
     title = models.CharField(max_length=50)
     code = models.CharField(max_length=50)
     start_date = models.DateField(null=True)
@@ -30,7 +36,7 @@ class Project(models.Model):
 
 
     def display_member(self):
-        return ", ".join(member.username for member in self.member.all())
+        return ", ".join(member.user for member in self.member.all())
 
     display_member.short_description = 'Member'
 
@@ -68,26 +74,12 @@ class Cost(models.Model):
         ordering = ['project']
 
 
-class JobDivision(models.Model):
-    # relations
-    assignee = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    project = models.ForeignKey('Project', on_delete=models.CASCADE, null=True)
-
-    # details
-    ratio = models.PositiveIntegerField(null=True, blank=True, default='', 
-                                        validators=[MaxValueValidator(100)])
-    salary = models.PositiveIntegerField(null=True)
-
-    def __str__(self):
-        worker = str(self.assignee)
-        return worker
-
-
 class Job(models.Model):
     # relations
-    assignee = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    assignee = models.ForeignKey('Assignee', on_delete=models.CASCADE, null=True)
 
     # details
+    gid = models.CharField(max_length=50)
     content = models.CharField(max_length=50, default='')
     completed = models.BooleanField(default=False)
 
