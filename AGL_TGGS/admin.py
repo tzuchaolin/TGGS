@@ -10,8 +10,8 @@ class CostAdmin(admin.ModelAdmin):
 
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ('title', 'code', 'start_date', 'deadline', 'end_date',
-                    'display_member', 'budget')
+    list_display = ('title', 'code', 'start_date', 'deadline', 'end_date', 
+                    'budget')
     
     # def grade(self, obj):
     #     return obj.grade()

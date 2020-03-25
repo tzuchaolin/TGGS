@@ -15,7 +15,7 @@ class Assignee(models.Model):
 
 class Project(models.Model):
     # relations
-    member = models.ManyToManyField(Assignee)
+    # member = models.ManyToManyField(Assignee)
 
     # details
     gid = models.CharField(max_length=50)
@@ -35,10 +35,10 @@ class Project(models.Model):
         return self.title
 
 
-    def display_member(self):
-        return ", ".join(member.user for member in self.member.all())
+    # def display_member(self):
+    #     return ", ".join(member.user for member in self.member.all())
 
-    display_member.short_description = 'Member'
+    # display_member.short_description = 'Member'
 
     # def grade(self):
     #     Psalary = 0
@@ -76,7 +76,8 @@ class Cost(models.Model):
 
 class Job(models.Model):
     # relations
-    assignee = models.ForeignKey('Assignee', on_delete=models.CASCADE, null=True)
+    assignee = models.ForeignKey(Assignee, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
 
     # details
     gid = models.CharField(max_length=50)

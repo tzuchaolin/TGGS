@@ -32,13 +32,9 @@ for assignee in Assignee.objects.all():
     resp = requests.request("GET", assignee_tasks_url, headers=headers).json()['data']
 
     for task in resp:
-        job = Job.objects.filter(gid=task['gid']).first()
-        if not job:
-            Job.objects.create(gid=task['gid'],
-                               completed=task['completed'],
-                               content=task['name'],
-                               assignee=assignee)
+        
         # Create projects
+        project = None
         tags = task['tags']
         for tag in tags:
             name = tag['name']
@@ -47,4 +43,13 @@ for assignee in Assignee.objects.all():
             if match:
                 project = Project.objects.filter(title=name).first()
                 if not project:
-                    Project.objects.create(gid=tag['gid'], title=tag['name'])
+                    project = Project.objects.create(gid=tag['gid'], title=tag['name'])
+
+        job = Job.objects.filter(gid=task['gid']).first()
+        if not job:
+            Job.objects.create(gid=task['gid'],
+                               completed=task['completed'],
+                               content=task['name'],
+                               assignee=assignee,
+                               project=project)
+       

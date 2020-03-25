@@ -11,9 +11,19 @@ def index(request):
     }
     return render(request, 'AGL_TGGS/projects.html', context)
 
-def division(request):
-    assignee_list = Assignee.objects.order_by('user')
+def project(request, project_gid):
+    project = Project.objects.get(gid=project_gid)
+    
+    division = {}
+
+    jobs = project.job_set.all()
+    for job in jobs:
+        if job.assignee.gid in division.keys():
+            division.setdefault(job.assignee.gid, []).append(job)            
+        else:
+            division[job.assignee.gid] = [job]
+
     context = {
-        'assignee_list': assignee_list,
+        'division': division,
     }
     return render(request, 'AGL_TGGS/division.html', context)
