@@ -53,3 +53,13 @@ for assignee in Assignee.objects.all():
                                assignee=assignee,
                                project=project)
        
+
+#Get grade from tasks
+for task in Job.objects.all():
+    name = task.content
+    pattern = re.compile(r'\$+\d+\.?\d*p$', re.IGNORECASE)
+    match = pattern.search(name)
+    if match and task.completed is True:
+        point = re.search(r'\d+\.?\d*', match.group(0))
+        Job.objects.filter(content=name).update(grade=point.group(0))
+

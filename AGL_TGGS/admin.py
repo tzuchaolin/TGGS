@@ -1,11 +1,11 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import Cost, Project, Job
+from AGL_TGGS.models import Project, Job
 
 
-@admin.register(Cost)
-class CostAdmin(admin.ModelAdmin):
-    list_display = ('project', 'content', 'amount')
+# @admin.register(Cost)
+# class CostAdmin(admin.ModelAdmin):
+#     list_display = ('project', 'content', 'amount')
 
 
 @admin.register(Project)

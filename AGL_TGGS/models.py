@@ -11,6 +11,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 class Assignee(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     gid = models.CharField(max_length=50)
+    sum_grade = models.FloatField(max_length=20, default=0)
     
 
 class Project(models.Model):
@@ -62,28 +63,29 @@ class Project(models.Model):
     #     return (self.budget -total_cost) / 1000
 
 
-class Cost(models.Model):
-    # relations
-    project = models.ForeignKey('Project', on_delete=models.CASCADE, null=True)
+# class Cost(models.Model):
+#     # relations
+#     project = models.ForeignKey('Project', on_delete=models.CASCADE, null=True)
     
-    # details
-    content = models.CharField(max_length=50, null=True)
-    amount = models.PositiveIntegerField(null=True, default=0)
+#     # details
+#     content = models.CharField(max_length=50, null=True)
+#     amount = models.PositiveIntegerField(null=True, default=0)
 
-    class Meta:
-        ordering = ['project']
+#     class Meta:
+#         ordering = ['project']
 
 
 class Job(models.Model):
     # relations
     assignee = models.ForeignKey(Assignee, on_delete=models.CASCADE)
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, null=True)
 
     # details
     gid = models.CharField(max_length=50)
     content = models.CharField(max_length=50, default='')
     completed = models.BooleanField(default=False)
+    grade = models.FloatField(max_length=20, default=0)
 
     def __str__(self):
-        return self.content 
+        return self.content
     
