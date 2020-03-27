@@ -63,3 +63,8 @@ for task in Job.objects.all():
         point = re.search(r'\d+\.?\d*', match.group(0))
         Job.objects.filter(content=name).update(grade=point.group(0))
 
+for assignee in Assignee.objects.all():
+    point = 0
+    for job in Job.objects.filter(assignee_id=assignee.id).all():
+        point += job.grade
+    Assignee.objects.filter(gid=assignee.gid).update(sum_grade=point)
