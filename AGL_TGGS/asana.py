@@ -38,9 +38,16 @@ for assignee in Assignee.objects.all():
         tags = task['tags']
         for tag in tags:
             name = tag['name']
-            pattern = re.compile(r'^g(\d)+_(\d)+_(\d)-')
-            match = pattern.match(name)
-            if match:
+            g_pattern = re.compile(r'^g(\d)+-(\d)+-(\d)+@')
+            g_match = g_pattern.match(name)
+            a_pattern = re.compile(r'^a(\d)+_(\d)+_(\d)+_(\w)+@')
+            a_match = a_pattern.match(name)
+
+            if g_match:
+                project = Project.objects.filter(title=name).first()
+                if not project:
+                    project = Project.objects.create(gid=tag['gid'], title=tag['name'])
+            if a_match:
                 project = Project.objects.filter(title=name).first()
                 if not project:
                     project = Project.objects.create(gid=tag['gid'], title=tag['name'])

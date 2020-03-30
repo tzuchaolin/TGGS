@@ -1,12 +1,16 @@
-<h1>Assignee</h1>
-<ul>
+<h2>Assignee</h2>
+<table width="400" border="1">
 {% for assignee, jobs in division.items %}
-    <li>{{ assignee }}
-        <ul>
+    <tr>
+    <th colspan="2">{{ assignee }}</th>
+    </tr>
+        <ol type="1">
             {% for job in jobs %}
-                <li>{{ job.content }} : {{ job.completed }}</li>
+                <tr>
+                <td><li>{{ job.content }}</li></td>
+                <td>{{ job.completed }}</td>
+                </tr>
             {% endfor %}
-        </ul>
-    </li>
+        </ol>
 {% endfor %}
-</ul>
+</table>
