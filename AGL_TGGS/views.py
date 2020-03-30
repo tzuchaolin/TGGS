@@ -23,11 +23,6 @@ def project(request, project_gid):
         else:
             division[job.assignee.user.email] = [job]
 
-    # for job.assignee.user.email in division.keys():
-    #     sum_grade = 0
-    #     sum_grade += job.grade
-    #     division[job.assignee.user.email, job] = [sum_grade]
-
     context = {
         'division': division,
     }

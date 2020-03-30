@@ -47,6 +47,7 @@ for assignee in Assignee.objects.all():
                 project = Project.objects.filter(title=name).first()
                 if not project:
                     project = Project.objects.create(gid=tag['gid'], title=tag['name'])
+
             if a_match:
                 project = Project.objects.filter(title=name).first()
                 if not project:
@@ -59,7 +60,13 @@ for assignee in Assignee.objects.all():
                                content=task['name'],
                                assignee=assignee,
                                project=project)
-       
+        else:
+            job.completed = task['completed']
+            job.content = task['name']
+            job.assignee = assignee
+            job.project = project
+            job.save()
+      
 
 #Get grade from tasks
 for task in Job.objects.all():
@@ -70,8 +77,8 @@ for task in Job.objects.all():
         point = re.search(r'\d+\.?\d*', match.group(0))
         Job.objects.filter(content=name).update(grade=point.group(0))
 
-for assignee in Assignee.objects.all():
-    point = 0
-    for job in Job.objects.filter(assignee_id=assignee.id).all():
-        point += job.grade
-    Assignee.objects.filter(gid=assignee.gid).update(sum_grade=point)
+# for assignee in Assignee.objects.all():
+#     point = 0
+#     for job in Job.objects.filter(assignee_id=assignee.id).all():
+#         point += job.grade
+#     Assignee.objects.filter(gid=assignee.gid).update(sum_grade=point)
