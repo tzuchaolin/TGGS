@@ -66,6 +66,18 @@ for assignee in Assignee.objects.all():
                 job.assignee = assignee
                 job.project = project
                 job.save()
+
+        job = Job.objects.filter(gid=task['gid']).first()
+        if not job:
+            Job.objects.create(gid=task['gid'],
+                            completed=task['completed'],
+                            content=task['name'],
+                            assignee=assignee)
+        else:
+            job.completed = task['completed']
+            job.content = task['name']
+            job.assignee = assignee
+            job.save()
       
 
 #Get grade from tasks
