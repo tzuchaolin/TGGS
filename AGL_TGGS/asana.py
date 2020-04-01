@@ -38,7 +38,7 @@ for assignee in Assignee.objects.all():
         tags = task['tags']
         for tag in tags:
             name = tag['name']
-            g_pattern = re.compile(r'^g(\d)+-(\d)+-(\d)+@')
+            g_pattern = re.compile(r'^g(\d)+_(\d)+_(\d)+@')
             g_match = g_pattern.match(name)
             a_pattern = re.compile(r'^a(\d)+_(\d)+_(\d)+_(\w)+@')
             a_match = a_pattern.match(name)
@@ -53,19 +53,19 @@ for assignee in Assignee.objects.all():
                 if not project:
                     project = Project.objects.create(gid=tag['gid'], title=tag['name'])
 
-        job = Job.objects.filter(gid=task['gid']).first()
-        if not job:
-            Job.objects.create(gid=task['gid'],
-                               completed=task['completed'],
-                               content=task['name'],
-                               assignee=assignee,
-                               project=project)
-        else:
-            job.completed = task['completed']
-            job.content = task['name']
-            job.assignee = assignee
-            job.project = project
-            job.save()
+            job = Job.objects.filter(gid=task['gid']).filter(project=project).first()
+            if not job:
+                Job.objects.create(gid=task['gid'],
+                                completed=task['completed'],
+                                content=task['name'],
+                                assignee=assignee,
+                                project=project)
+            else:
+                job.completed = task['completed']
+                job.content = task['name']
+                job.assignee = assignee
+                job.project = project
+                job.save()
       
 
 #Get grade from tasks
@@ -76,9 +76,5 @@ for task in Job.objects.all():
     if match and task.completed is True:
         point = re.search(r'\d+\.?\d*', match.group(0))
         Job.objects.filter(content=name).update(grade=point.group(0))
-
-# for assignee in Assignee.objects.all():
-#     point = 0
-#     for job in Job.objects.filter(assignee_id=assignee.id).all():
-#         point += job.grade
-#     Assignee.objects.filter(gid=assignee.gid).update(sum_grade=point)
+    elif match and task.completed is False:
+        Job.objects.filter(content=name).update(grade=0)

@@ -15,9 +15,6 @@ class Assignee(models.Model):
     
 
 class Project(models.Model):
-    # relations
-    # member = models.ManyToManyField(Assignee)
-
     # details
     gid = models.CharField(max_length=50)
     title = models.CharField(max_length=50)
@@ -34,45 +31,6 @@ class Project(models.Model):
 
     def __str__(self):
         return self.title
-
-
-    # def display_member(self):
-    #     return ", ".join(member.user for member in self.member.all())
-
-    # display_member.short_description = 'Member'
-
-    # def grade(self):
-    #     Psalary = 0
-    #     #if len(self.jobdivision_set.all()) > 1:
-
-    #     if len(self.jobdivision_set.all()) > 1:
-    #         Psalary = reduce(lambda x, y: x.salary + y.salary, self.jobdivision_set.all())
-    #     Sdays = self.end_date - self.deadline
-    #     if Sdays.days > 0:
-    #         cost_of_salary = Sdays.days * Psalary / 30
-    #     else:
-    #         cost_of_salary = 0
-        
-    #     cost_of_project = 0
-    #     if len(self.cost_set.all()) > 1:
-    #         cost_of_project = reduce(lambda x, y: x.amount + y.amount, self.cost_set.all())
-    #     return (self.budget - cost_of_project - cost_of_salary) / 1000
-    
-    # def grade(self):
-    #     total_cost = reduce(lambda x, y: x.amount + y.amount, self.cost_set) 
-    #     return (self.budget -total_cost) / 1000
-
-
-# class Cost(models.Model):
-#     # relations
-#     project = models.ForeignKey('Project', on_delete=models.CASCADE, null=True)
-    
-#     # details
-#     content = models.CharField(max_length=50, null=True)
-#     amount = models.PositiveIntegerField(null=True, default=0)
-
-#     class Meta:
-#         ordering = ['project']
 
 
 class Job(models.Model):

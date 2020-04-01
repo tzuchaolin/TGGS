@@ -2,7 +2,7 @@
 <table width="400" border="1">
 {% for assignee, jobs in division.items %}
     <tr>
-    <th colspan="2">{{ assignee }}</th>
+    <th colspan="2">{{ assignee.user.email }}</th>
     </tr>
         <ol type="1">
             {% for job in jobs %}

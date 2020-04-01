@@ -18,10 +18,10 @@ def project(request, project_gid):
 
     jobs = project.job_set.all()
     for job in jobs:
-        if job.assignee.user.email in division.keys():
-            division.setdefault(job.assignee.user.email, []).append(job)            
+        if job.assignee in division.keys():
+            division.setdefault(job.assignee, []).append(job)            
         else:
-            division[job.assignee.user.email] = [job]
+            division[job.assignee] = [job]
 
     context = {
         'division': division,
